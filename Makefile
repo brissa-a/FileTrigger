@@ -1,5 +1,5 @@
 ifneq ($(KERNELRELEASE),)
-obj-m := file_trigger.o
+obj-m := file_trigger.o net.o
 # Otherwise we were called directly from the command
 # line; invoke the kernel build system.
 else
