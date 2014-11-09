@@ -31,6 +31,18 @@ struct inode *myfs_get_inode(struct super_block *sb,
 		mapping_set_gfp_mask(inode->i_mapping, GFP_HIGHUSER);
 		mapping_set_unevictable(inode->i_mapping);
 		inode->i_atime = inode->i_mtime = inode->i_ctime = CURRENT_TIME;
+		switch (mode & S_IFMT) {
+		default:
+			break;
+		case S_IFREG:
+			break;
+		case S_IFDIR:
+			/* directory inodes start off with i_nlink == 2 (for "." entry) */
+			inc_nlink(inode);
+			break;
+		case S_IFLNK:
+			break;
+		}
 	}
 	return inode;
 }
@@ -105,6 +117,7 @@ static int __init mymodule_init(void)
 static void __exit mymodule_exit(void)
 {
 	pr_info("mymodule: exit\n");
+	unregister_filesystem(&myfs_fs_type);
 	return;
 }
 
